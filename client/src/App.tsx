@@ -4,8 +4,16 @@ import './App.css';
 
 function App() {
   const [recording, setRecording] = useState(false);
-  const [alerts, setAlerts] = useState<string[]>([]);
-  const [logs, setLogs] = useState<string[]>([]);
+  const [alerts, setAlerts] = useState<string[]>([
+    '⚠️ [ALERT] 43% anomaly spike in IV Paracetamol & Platelets detected in Zone 4. Predictive model indicates high-probability Dengue cluster. Automating FEFO reserve transfers from Zone 2...'
+  ]);
+  const [logs, setLogs] = useState<string[]>([
+    '> POST /api/v1/triage/audio_stream ... [200 OK]',
+    '> Parsing biometric signature... MATCH: Dr. S. Verma',
+    '> NLP extraction: "O-negative blood (2 units)"',
+    '> Decrementing local inventory... Success.',
+    '> Encrypting delta-state for state hub...'
+  ]);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -83,9 +91,15 @@ function App() {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
-      <header style={{ borderBottom: '1px solid #30363d', paddingBottom: '1rem', marginBottom: '2rem', textAlign: 'left' }}>
-        <h1 style={{ margin: 0, color: '#58a6ff' }}>NodeBinding AI</h1>
-        <p style={{ margin: '5px 0 0 0', color: '#8b949e' }}>National Command Center: Triage, Verification & Supply Defense</p>
+      <header style={{ borderBottom: '1px solid #30363d', paddingBottom: '1rem', marginBottom: '2rem', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1 style={{ margin: 0, color: '#58a6ff' }}>NodeBinding AI</h1>
+          <p style={{ margin: '5px 0 0 0', color: '#8b949e' }}>National Command Center: Triage, Verification & Supply Defense</p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#161b22', padding: '0.5rem 1rem', borderRadius: '20px', border: '1px solid #30363d' }}>
+          <span className="pulse" style={{ fontSize: '10px' }}>🔴</span>
+          <span style={{ color: '#56d364', fontSize: '0.85rem', fontWeight: 'bold', fontFamily: 'monospace' }}>LIVE: Secunderabad District Network Syncing...</span>
+        </div>
       </header>
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem' }}>
@@ -163,6 +177,15 @@ function App() {
             </div>
 
           </div>
+          
+          {/* God Mode Action Buttons */}
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+            <button className="god-mode-btn">[ Force District Sync ]</button>
+            <button className="god-mode-btn">[ Authorize Emergency Fleet ]</button>
+            <button className="god-mode-btn">[ View Acoustic Logs ]</button>
+            <button className="god-mode-btn">[ Override Biometric Lock ]</button>
+          </div>
+          
         </div>
       </div>
     </div>

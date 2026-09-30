@@ -4,3 +4,31 @@
   margin: 0 auto;
   text-align: center;
 }
+
+.pulse {
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.god-mode-btn {
+  background-color: transparent;
+  color: #58a6ff;
+  border: 1px solid #30363d;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.god-mode-btn:hover {
+  border-color: #58a6ff;
+  background-color: rgba(88, 166, 255, 0.1);
+}
