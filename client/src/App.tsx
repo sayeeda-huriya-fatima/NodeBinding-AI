@@ -101,17 +101,17 @@ function App() {
       </div>
 
       {alerts.length > 0 && (
-        <div style={{ backgroundColor: '#fff3cd', padding: '1rem', border: '1px solid #ffeeba', borderRadius: '4px', marginBottom: '1rem' }}>
-          <h3 style={{ color: '#856404', margin: '0 0 0.5rem 0' }}>Active Epidemic Triggers</h3>
-          <ul style={{ color: '#856404', margin: 0 }}>
+        <div style={{ backgroundColor: '#4a151b', padding: '1rem', border: '1px solid #732a32', borderRadius: '4px', marginBottom: '1rem' }}>
+          <h3 style={{ color: '#ff7b72', margin: '0 0 0.5rem 0' }}>Active Epidemic Triggers</h3>
+          <ul style={{ color: '#ffa657', margin: 0, textAlign: 'left' }}>
             {alerts.map((alert, i) => <li key={i}>{alert}</li>)}
           </ul>
         </div>
       )}
 
-      <div style={{ backgroundColor: '#f8f9fa', padding: '1rem', border: '1px solid #dee2e6', borderRadius: '4px' }}>
-        <h3 style={{ margin: '0 0 0.5rem 0' }}>System Ledger & SQLite Edge-Sync Logs</h3>
-        <div style={{ fontSize: '0.9rem', color: '#666', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
+      <div style={{ backgroundColor: '#161b22', padding: '1.5rem', border: '1px solid #30363d', borderRadius: '8px', textAlign: 'left' }}>
+        <h3 style={{ margin: '0 0 1rem 0', color: '#8b949e', borderBottom: '1px solid #30363d', paddingBottom: '0.5rem' }}>System Ledger & SQLite Edge-Sync Logs</h3>
+        <div style={{ fontSize: '0.9rem', color: '#56d364', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
           {logs.map((log, i) => <div key={i}>{'>'} {log}</div>)}
           {logs.length === 0 && 'Awaiting triage input...'}
         </div>
