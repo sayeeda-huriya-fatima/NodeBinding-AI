@@ -223,3 +223,4 @@ body, html {
   margin-top: 1rem;
   text-align: center;
 }
+.toast-info { background-color: #3b82f6; }
