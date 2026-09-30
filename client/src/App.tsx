@@ -37,6 +37,12 @@ function App() {
   const [isAllocating, setIsAllocating] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isTransferring, setIsTransferring] = useState(false);
+  
+  // Optical Edge-Ledger State
+  const [isScanning, setIsScanning] = useState(false);
+  const [opticalLogs, setOpticalLogs] = useState<string[]>([
+    'Waiting for stock register image capture...'
+  ]);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -113,6 +119,8 @@ function App() {
 
   const handleFirebaseWarning = async () => {
     setIsDispatching(true);
+    setLogs(prev => [...prev, '> [FEDERATED AI] Patient data retained locally. Sending only MODEL WEIGHTS to State Server...']);
+    await new Promise(r => setTimeout(r, 1000));
     setLogs(prev => [...prev, '> [FCM] Constructing high-priority payload for Dengue cluster...']);
     await new Promise(r => setTimeout(r, 1500));
     setLogs(prev => [...prev, '> [FCM] SUCCESS: Early warning dispatched to 14 District Health Officers.']);
@@ -121,6 +129,8 @@ function App() {
 
   const handleAutoRoute = async () => {
     setIsRouting(true);
+    setLogs(prev => [...prev, '> [VERTEX AI] Analyzing incoming federated model weights...']);
+    await new Promise(r => setTimeout(r, 1000));
     setLogs(prev => [...prev, '> [VERTEX AI] Calculating optimal supply re-routing for Dengue surge...']);
     await new Promise(r => setTimeout(r, 2000));
     setInventory((prev: any) => ({...prev, 'IV Paracetamol': prev['IV Paracetamol'] + 500, 'Platelets': prev['Platelets'] + 100}));
@@ -154,13 +164,28 @@ function App() {
     setIsExporting(false);
   };
 
+  const handleOpticalScan = async () => {
+    setIsScanning(true);
+    setOpticalLogs(['> Camera initialized. Capturing physical stock register...']);
+    await new Promise(r => setTimeout(r, 1000));
+    setOpticalLogs(prev => [...prev, '> Analyzing image via Edge Computer Vision...']);
+    await new Promise(r => setTimeout(r, 1500));
+    setOpticalLogs(prev => [...prev, '> Handwriting OCR successful. Validating tallies...']);
+    await new Promise(r => setTimeout(r, 1000));
+    setOpticalLogs(prev => [...prev, '[EXTRACTED] O-negative Blood: 12 -> 14']);
+    setOpticalLogs(prev => [...prev, '[EXTRACTED] Oxygen Cylinders: 45 -> 40']);
+    setInventory((prev: any) => ({...prev, 'O-negative Blood': 14, 'Oxygen Cylinders': 40}));
+    setOpticalLogs(prev => [...prev, '> National Ledger updated. Zero typing required.']);
+    setIsScanning(false);
+  };
+
   // --- RENDER PAGES ---
 
   const renderAcousticTriage = () => (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
       <div className="clinical-card" style={{ display: 'flex', flexDirection: 'column' }}>
         <h2 style={{ fontSize: '1.25rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>Acoustic Proof-of-Presence</h2>
-        <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '2rem' }}>Passive capture eliminates data entry burden and falsified biometric shift logs.</p>
+        <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '2rem' }}>Doctors dictate 5-second triage notes. Passive capture eliminates data entry burden and falsified biometric shift logs.</p>
         <button 
           onMouseDown={startRecording} onMouseUp={stopRecording} onTouchStart={startRecording} onTouchEnd={stopRecording}
           className={`dictate-btn ${recording ? 'recording' : ''}`} style={{ marginBottom: '1.5rem' }}
@@ -196,20 +221,45 @@ function App() {
     </div>
   );
 
+  const renderOpticalLedger = () => (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      <div className="clinical-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', minHeight: '400px' }}>
+        <h2 style={{ fontSize: '1.25rem', margin: '0 0 0.5rem 0', color: '#0f172a' }}>Optical Edge-Ledger</h2>
+        <p style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '2rem', padding: '0 1rem' }}>Nurses do not have time to type. Take a photo of the physical stock register or blood bank fridge. Edge Computer Vision extracts handwritten tallies instantly.</p>
+        
+        <div style={{ width: '100%', maxWidth: '300px', height: '200px', border: '2px dashed #cbd5e1', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', marginBottom: '2rem' }}>
+          <span style={{ fontSize: '3rem', opacity: 0.5 }}>📸</span>
+        </div>
+
+        <button className="dictate-btn" style={{ width: '80%', padding: '1rem' }} onClick={handleOpticalScan} disabled={isScanning}>
+          {isScanning ? '⏳ Extracting OCR...' : '📷 Capture Stock Register'}
+        </button>
+      </div>
+      <div className="clinical-card" style={{ display: 'flex', flexDirection: 'column' }}>
+        <h2 style={{ fontSize: '1.25rem', margin: '0 0 1rem 0', color: '#0f172a' }}>Vision AI Extraction Engine</h2>
+        <div style={{ backgroundColor: '#0d1117', color: '#56d364', padding: '1rem', borderRadius: '6px', fontFamily: 'monospace', fontSize: '0.85rem', flexGrow: 1, overflowY: 'auto', border: '1px solid #30363d', display: 'flex', flexDirection: 'column' }}>
+          {opticalLogs.map((log, i) => (
+            <div key={i} style={{ marginBottom: '8px', color: log.includes('[EXTRACTED]') ? '#38bdf8' : '#56d364' }}>{log}</div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   const renderPredictiveRouting = () => (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '2rem' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         <div className="clinical-card" style={{ borderLeft: '4px solid #ef4444' }}>
           <h2 style={{ fontSize: '1.1rem', margin: '0 0 0.5rem 0', color: '#991b1b', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            🦠 Vector-Borne Outbreak (Dengue)
+            🦠 Epidemiological Federated Routing
           </h2>
-          <p style={{ fontSize: '0.85rem', color: '#7f1d1d', marginBottom: '1rem' }}>Simultaneous spike in IV paracetamol and platelet depletion flags epidemic surge.</p>
+          <p style={{ fontSize: '0.85rem', color: '#7f1d1d', marginBottom: '1rem' }}>Patient data never leaves the district. Sending only model weights to state server to trigger early warnings.</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <button className="action-btn" style={{ backgroundColor: '#ef4444', color: 'white', border: 'none', justifyContent: 'center' }} onClick={handleFirebaseWarning} disabled={isDispatching}>
-              {isDispatching ? '⏳ Dispatching...' : '📡 Dispatch Firebase Warning'}
+              {isDispatching ? '⏳ Transmitting Weights...' : '📡 Dispatch Federated Warning'}
             </button>
             <button className="action-btn" style={{ justifyContent: 'center' }} onClick={handleAutoRoute} disabled={isRouting}>
-              {isRouting ? '⏳ Routing...' : '🚚 Auto-Route Buffers to Zone 4'}
+              {isRouting ? '⏳ Routing...' : '🚚 Auto-Route Buffers to Surge Zone'}
             </button>
           </div>
         </div>
@@ -296,17 +346,20 @@ function App() {
         <div className="sidebar-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <div style={{ width: '32px', height: '32px', backgroundColor: '#0ea5e9', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>☤</div>
-            <h1 style={{ margin: 0, fontSize: '1.1rem', color: '#f8fafc', fontWeight: '700' }}>NodeBinding AI</h1>
+            <h1 style={{ margin: 0, fontSize: '1.1rem', color: '#f8fafc', fontWeight: '700' }}>VitalNode AI</h1>
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Command Center</div>
+          <div style={{ fontSize: '0.65rem', color: '#94a3b8', marginTop: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', lineHeight: '1.4' }}>Zero-Friction Federated Supply & Triage Engine</div>
         </div>
         
         <nav className="sidebar-nav">
           <div className={`nav-item ${activeTab === 'triage' ? 'active' : ''}`} onClick={() => setActiveTab('triage')}>
             <span>🎙️</span> Acoustic Triage
           </div>
+          <div className={`nav-item ${activeTab === 'optical' ? 'active' : ''}`} onClick={() => setActiveTab('optical')}>
+            <span>📸</span> Optical Ledger
+          </div>
           <div className={`nav-item ${activeTab === 'predictive' ? 'active' : ''}`} onClick={() => setActiveTab('predictive')}>
-            <span>📈</span> Predictive Routing
+            <span>📈</span> Federated Routing
           </div>
           <div className={`nav-item ${activeTab === 'fefo' ? 'active' : ''}`} onClick={() => setActiveTab('fefo')}>
             <span>📦</span> FEFO Logistics
@@ -323,7 +376,8 @@ function App() {
           <div>
             <h2 style={{ margin: 0, fontSize: '1.25rem', color: '#0f172a' }}>
               {activeTab === 'triage' && 'Acoustic Proof-of-Presence'}
-              {activeTab === 'predictive' && 'Predictive Supply Routing'}
+              {activeTab === 'optical' && 'Optical Edge-Ledger'}
+              {activeTab === 'predictive' && 'Epidemiological Federated Routing'}
               {activeTab === 'fefo' && 'FEFO Waste Prevention'}
               {activeTab === 'sync' && 'Offline-First Infrastructure'}
             </h2>
@@ -336,6 +390,7 @@ function App() {
 
         <div className="page-content">
           {activeTab === 'triage' && renderAcousticTriage()}
+          {activeTab === 'optical' && renderOpticalLedger()}
           {activeTab === 'predictive' && renderPredictiveRouting()}
           {activeTab === 'fefo' && renderFefoLogistics()}
           {activeTab === 'sync' && renderEdgeSync()}
