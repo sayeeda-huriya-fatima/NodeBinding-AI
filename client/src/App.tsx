@@ -3,6 +3,13 @@ import { syncService } from './lib/syncService';
 import './App.css';
 
 function App() {
+  const [recording, setRecording] = useState(false);
+  const [alerts, setAlerts] = useState<string[]>([]);
+  const [logs, setLogs] = useState<string[]>([]);
+  
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
   const [inventory, setInventory] = useState<any>({
     'O-negative': 50,
     'ICU Beds': 10,
